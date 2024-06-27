@@ -1,0 +1,179 @@
+﻿@model Trabalho_Pratico.Models.ViewModels.PesquisaHabitacoesViewModel
+@{
+    ViewData["Title"] = "Habitações Disponiveis";
+}
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+    <h1 class="display-4 fw-normal">@ViewData["Title"]</h1>
+</div>
+<hr />
+<form method="post">
+
+    <label asp-for="TextoAPesquisar" class="control-label"></label>
+    <input asp-for="TextoAPesquisar" />
+    <button id="botaoPesquisa" type="submit" class="btn btn-default">
+        <svg bootstrap-icon="Search" class="text-warning" width="24" height="24" aria-label="Search"></svg>
+    </button>
+    <label asp-for="DataEntrada" class="control-label"></label>
+    <input asp-for="DataEntrada" onchange="this.form.submit()" />
+    <label asp-for="DataSaida" class="control-label"></label>
+    <input asp-for="DataSaida" onchange="this.form.submit()" />
+
+    <label for="ordem">Ordenação:</label>
+    <select name="Ordem" asp-for="Ordem" onchange="this.form.submit()">
+        <option value="precoAsc">Mais Barata</option>
+        <option value="precoDesc">Mais Cara</option>
+        <option value="classDesc">Classificação</option>
+    </select>
+</form>
+
+@if (@ViewBag.error != null)
+{
+    <p class="text-danger">@ViewBag.error</p>
+}
+<p></p>
+<div class="container bg-white">
+
+    @if (!(string.IsNullOrEmpty(Model.TextoAPesquisar)))
+    {
+        @if (Model.ListaDeHabitacoes.Count == 0)
+        {
+            <p class="alert alert-warning">
+                Não foi possível encontrar habitações com os dados introduzidos. Por favor, reveja a sua
+                pesquisa.
+            </p>
+        }
+    }
+    else
+    {
+        @if (Model.ListaDeHabitacoes.Count == 0)
+        {
+            <p class="alert alert-warning">
+                Não existem habitações disponiveis. Por favor, tente novamente mais tarde.
+            </p>
+        }
+    }
+
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+
+        <div class="col-md-2 text-start">
+            <h5>Locador:</h5>
+            <form method="post">
+                <input type="hidden" asp-for="@Model.TextoAPesquisar" />
+                <input type="hidden" asp-for="@Model.DataEntrada" />
+                <input type="hidden" asp-for="@Model.CategoriaId" />
+                <input type="hidden" asp-for="@Model.DataSaida" />
+                <input type="radio" id="Locador0" name="Locador" value="0" onchange="this.form.submit()"
+                @(Model.LocadorId == 0 ? "checked" : "") />
+                <label for="Locador0">Todas</label> <br>
+                @foreach (Locador locador in ViewBag.LocadorId)
+                {
+                    <input type="radio" id="Locador@(locador.Id)" name="Locador" value="@locador.Id" onchange="this.form.submit()"
+                    @(Model.LocadorId == locador.Id ? "checked" : "") />
+                    <label for="Locador@(locador.Id)">@locador.Nome</label> <br>
+                }
+
+            </form>
+            <p></p>
+            <h5>Categoria:</h5>
+            <form method="post">
+                <input type="hidden" asp-for="@Model.TextoAPesquisar" />
+                <input type="hidden" asp-for="@Model.DataEntrada" />
+                <input type="hidden" asp-for="@Model.LocadorId" />
+                <input type="hidden" asp-for="@Model.DataSaida" />
+                <input type="radio" id="Categoria0" name="Categoria" value="0" onchange="this.form.submit()"
+                @(Model.CategoriaId == 0 ? "checked" : "") />
+                <label for="Categoria0">Todas</label> <br>
+                @foreach (CategoriaHabitacao categoria in ViewBag.CategoriaId)
+                {
+                    <input type="radio" id="Categoria@(categoria.Id)" name="Categoria" value="@categoria.Id" onchange="this.form.submit()"
+                    @(Model.CategoriaId == categoria.Id ? "checked" : "") />
+                    <label for="Categoria@(categoria.Id)">@categoria.Nome</label> <br>
+                }
+
+            </form>
+        </div>
+        @foreach (var item in Model.ListaDeHabitacoes)
+        {
+            <div class="col-md-3">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        @if (item.Foto == null)
+                        {
+                            <img id="MyFoto" class="img-thumbnail" src="~/img/user.png" style="height:200px;width:auto" />
+                        }
+                        else
+                        {
+                            <img id="MyFoto" class="img-thumbnail"
+                                 src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" style="height:200px;width:auto" />
+                        }
+                        <h2 class="my-0 fw-normal">
+                            @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                            {
+                                @Html.DisplayFor(modelItem => item.Tipo)
+                                <span> </span>
+                                @Html.DisplayFor(modelItem => item.Descricao)
+                            }
+                            else
+                            {
+                                @Html.Raw(item.Tipo.ToString().ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                        "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                                <span> </span>
+                                @Html.Raw(item.Morada.ToString().ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                        "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                            }
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <h5>Categoria: @Html.DisplayFor(modelItem => item.Categoria.Nome)</h5>
+                            @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                            {
+                                <h5>Localização: @Html.DisplayFor(modelItem => item.Localizacao.Nome)</h5>
+                            }
+                            else
+                            {
+                                <h5>
+                                    Localização: @Html.Raw(item.Localizacao.Nome.ToString().ToLower()
+                            .Replace(Model.TextoAPesquisar.ToLower(),
+                            "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                                </h5>
+                            }
+                            <h5>
+                                Locador:
+                                @Html.DisplayFor(modelItem => item.Locador.Nome)
+                                @{
+                                    decimal sum = 0;
+                                    foreach (var classi in item.Locador.Avaliacao)
+                                    {
+                                        sum += classi.ClassificacaoReserva;
+                                    }
+                                    if (item.Locador.Avaliacao.Count > 0)
+                                    {
+                                        sum /= item.Locador.Avaliacao.Count;
+                                        <span>@sum/10</span>
+                                    }
+                                }
+                                <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+                            </h5>
+                        </ul>
+                        <hr>
+                        <h1 class="card-title pricing-card-title">
+                            @Html.DisplayFor(modelItem => item.PrecoPorNoite)€
+                            <small class="text-muted fw-light"></small>
+                        </h1>
+                        @if (User.IsInRole("Cliente"))
+                        {
+                            <hr>
+                            <a class="w-100 btn btn-lg btn-outline-primary"
+                               asp-controller="Arrendamentoes" asp-action="Create" asp-route-HabitacaoId="@item.Id">
+                                Alugar
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

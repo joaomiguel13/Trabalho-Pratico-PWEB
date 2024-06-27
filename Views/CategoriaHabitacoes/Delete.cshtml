@@ -1,0 +1,26 @@
+﻿@model Trabalho_Pratico.Models.CategoriaHabitacao
+
+@{
+    ViewData["Title"] = "Apagar categoria de habitações";
+}
+
+<h1>Apagar</h1>
+
+<h3>Tem a certeza que pretende apagar esta categoria?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Apagar" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>

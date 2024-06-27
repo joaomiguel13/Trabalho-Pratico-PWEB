@@ -1,0 +1,33 @@
+﻿@model List<Trabalho_Pratico.Models.ViewModels.EstatisticasViewModel>
+
+@{
+    ViewData["Title"] = "Estatisticas";
+}
+
+<p>Número total de arrendamentos do locador: @ViewBag.NumeroArrendamentosLocador</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Ano</th>
+                <th scope="col">Mês</th>
+                <th scope="col">Número de Arrendamentos</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var estatistica in Model)
+            {
+                <tr>
+                    <td>@estatistica.Ano</td>
+                    <td>@estatistica.Mes</td>
+                    <td>@estatistica.NumeroArrendamentos</td>
+                    <td>
+                        <a asp-action="ListaArrendamentos" asp-route-ano="@estatistica.Ano" asp-route-mes="@estatistica.Mes" class="btn btn-warning">Ver Arrendamentos</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

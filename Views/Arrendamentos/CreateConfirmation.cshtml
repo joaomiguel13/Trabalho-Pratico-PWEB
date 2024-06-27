@@ -1,0 +1,107 @@
+﻿@model Trabalho_Pratico.Models.Arrendamento
+
+@{
+    ViewData["Title"] = "Arrendar Habitação";
+}
+
+<h1>Arrendar Habitação</h1>
+
+@if (ViewBag.error != null)
+{
+    <span class="text-danger">@ViewBag.error</span>
+}
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="HabitacaoId" value="@Model.HabitacaoId" />
+            <div class="form-group">
+                <label asp-for="DataEntrada" class="control-label"></label> 
+                <input asp-for="DataEntrada" class="form-control" readonly />
+                <span asp-validation-for="DataEntrada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataSaida" class="control-label"></label>
+                <input asp-for="DataSaida" class="form-control" readonly />
+                <span asp-validation-for="DataSaida" class="text-danger"></span>
+            </div>
+            <div class="form-group pt-4">
+                <p class="alert alert-info">
+                    Este arrendamento terá um custo de  <b>@((@Model.DataEntrada - @Model.DataSaida).Days * @Model.Habitacao.PrecoPorNoite)€</b>.
+                </p>
+            </div>
+            <p></p>
+            <div class="form-group">
+                <p>Por favor escolha uma das seguintes opções:</p>
+                <input type="submit" value="Realizar Arrendamento" class="btn btn-primary" />
+                <a asp-controller="Habitacaos" asp-action="Search" class="btn btn-secondary">Cancelar Reserva</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-4 mb-7 text-center">
+        <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+                @if (Model.Habitacao.Foto == null)
+                {
+                    <img id="MyFoto" class="img-thumbnail" src="~/img/user.png" style="width: 200px; height: auto;" />
+                }
+                else
+                {
+                    <img id="MyFoto" class="img-thumbnail"
+                         src="data:image/*;base64,@(Convert.ToBase64String(Model.Habitacao.Foto))" style="width: 200px; height: auto;" />
+                }
+                <h2 class="my-0 fw-normal">
+
+                    @Html.DisplayFor(modelItem => Model.Habitacao.Tipo)
+                    <span> </span>
+                    @Html.DisplayFor(modelItem => Model.Habitacao.Descricao)
+
+                </h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mt-3 mb-4">
+                    <h5>Categoria: @Html.DisplayFor(modelItem => Model.Habitacao.Categoria.Nome)</h5>
+
+                    <h5>Localização: @Html.DisplayFor(modelItem => Model.Habitacao.Localizacao.Nome)</h5>
+
+                    <h5>
+                        Locador:
+                        @Html.DisplayFor(modelItem => Model.Habitacao.Locador.Nome)
+                        @{
+                            decimal sum = 0;
+                            foreach (var classi in Model.Habitacao.Locador.Avaliacao)
+                            {
+                                sum += classi.ClassificacaoReserva;
+                            }
+                            if (Model.Habitacao.Locador.Avaliacao.Count > 0)
+                            {
+                                sum /= Model.Habitacao.Locador.Avaliacao.Count;
+                            }
+                            if (sum > 0)
+                            {
+                                <span>@sum/10</span>
+                            }
+                        }
+                        <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+
+                    </h5>
+                </ul>
+                <hr>
+                <h1 class="card-title pricing-card-title">
+                    @Html.DisplayFor(modelItem => Model.Habitacao.PrecoPorNoite)€
+                    <small class="text-muted fw-light"></small>
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

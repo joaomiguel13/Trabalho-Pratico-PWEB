@@ -1,0 +1,127 @@
+﻿@model Trabalho_Pratico.Models.ViewModels.PesquisaLocadorViewModel
+
+@{
+    ViewData["Title"] = "Locadores";
+}
+
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+    <h1 class="display-4 fw-normal">@ViewData["Title"]</h1>
+</div>
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Adicionar Locador</a>
+</p>
+
+<form method="post">
+    <input type="hidden" asp-for="@Model.SubscricaoAtiva" />
+    <label asp-for="TextoAPesquisar" class="control-label"></label>
+    <input asp-for="TextoAPesquisar" />
+    <button id="botaoPesquisa" type="submit" class="btn btn-default">
+        <svg bootstrap-icon="Search" class="text-warning" width="24" height="24" aria-label="Search"></svg>
+    </button>
+    <label for="ordem">Ordenação:</label>
+    <select name="Ordem" asp-for="Ordem" onchange="this.form.submit()">
+        <option value="nomeDesc">Nome Descendente</option>
+        <option value="nomeAsc">Nome Ascendente</option>
+        <option value="classDesc">Classificação Descendente</option>
+        <option value="classAsc">Classificação Ascendente</option>
+    </select>
+</form>
+
+@if (@ViewBag.error != null)
+{
+    <p class="text-danger">@ViewBag.error</p>
+}
+
+<div class="row">
+    <div class="col-md-2">
+        <h5>Subscrição:</h5>
+        <form method="post">
+            <input type="hidden" asp-for="@Model.TextoAPesquisar" />
+            <input type="hidden" asp-for="@Model.Ordem" />
+            <input type="radio" id="subscricaoTodos" name="SubscricaoAtiva" value="subscricaoTodos" onchange="this.form.submit()"
+            @(Model.SubscricaoAtiva == null ? "checked" : Model.SubscricaoAtiva.Equals("subscricaoTodos") ? "checked" : "") />
+            <label for="subscricaoTodos">Todos</label><br>
+            <input type="radio" id="subscricaoTrue" name="SubscricaoAtiva" value="subscricaoTrue" onchange="this.form.submit()"
+            @(Model.SubscricaoAtiva != null ? Model.SubscricaoAtiva.Equals("subscricaoTrue") ? "checked" : "" : "") />
+            <label for="subscricaoTrue">Subscrição Ativa</label><br>
+            <input type="radio" id="subscricaoFalse" name="SubscricaoAtiva" value="subscricaoFalse" onchange="this.form.submit()"
+            @(Model.SubscricaoAtiva != null ? Model.SubscricaoAtiva.Equals("subscricaoFalse") ? "checked" : "" : "") />
+            <label for="subscricaoFalse">Subscrição Inativa</label>
+        </form>
+    </div>
+    <div class="col-md-10">
+        <table class="table table-bordered table-striped table-hover text-center table-responsive-sm">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ListaDeLocadores.FirstOrDefault().Nome)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ListaDeLocadores.FirstOrDefault().EstadoSubscricao)
+                    </th>
+                    <th>
+                        Classificação
+                    </th>
+                    <th>Operações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ListaDeLocadores)
+                {
+                    <tr>
+                        <td>
+                            @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                            {
+                                @Html.DisplayFor(modelItem => item.Nome)
+                            }
+                            else
+                            {
+                                @Html.Raw(item.Nome.ToString().ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                        "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                            }
+                        </td>
+                        <td>
+                            @if (item.EstadoSubscricao)
+                            {
+                                <p class="text-success fw-bold">Ativo</p>
+                            }
+                            else
+                            {
+                                <p class="text-danger fw-bold">Inativo</p>
+                            }
+                        </td>
+                        <td>
+                            @{
+                                decimal sum = 0;
+                                foreach (var classi in item.Avaliacao)
+                                {
+                                    sum += classi.ClassificacaoReserva;
+                                }
+                                if (item.Avaliacao.Count > 0)
+                                {
+                                    sum /= item.Avaliacao.Count;
+                                }
+                                <span>@sum/10</span>
+                                <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+                            }
+                        </td>
+                        <td>
+                            @if (item.EstadoSubscricao)
+                            {
+                                <a asp-action="Desativar" asp-route-id="@item.Id" class="btn btn-outline-danger">Desativar Subscrição</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Ativar" asp-route-id="@item.Id" class="btn btn-outline-success">Ativar Subscrição</a>
+                            }
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Editar</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Apagar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

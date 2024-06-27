@@ -1,0 +1,103 @@
+﻿@model Trabalho_Pratico.Models.ViewModels.HabitacaoViewModel
+
+@{
+    ViewData["Title"] = "Editar Habitação";
+}
+
+<h1>Editar</h1>
+
+<h4>Editar um veiculo</h4>
+<hr />
+@if (@ViewBag.error != null)
+{
+    <p class="text-danger">@ViewBag.error</p>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-floating">
+                <div>
+                    @if (Model.Foto == null)
+                    {
+                        <img id="MyFoto" class="img-thumbnail" src="~/img/user.png" style="height:75px;width:auto" />
+                    }
+                    else
+                    {
+                        <img id="MyFoto" class="img-thumbnail" style="height:75px;width:auto"
+                             src="data:image/*;base64,@(Convert.ToBase64String(Model.Foto))" />
+                    }
+                </div>
+                <div>
+                    <label asp-for="@Model.FotoFile">Escolha uma imagem de perfil:</label>
+                    <input type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                           class="form-control input-validation-error"
+                           onchange="document.getElementById('FotoFile').src = window.URL.createObjectURL(this.files[0])"
+                           data-val="false" data-val-required="The FotoFile field is required." id="AvatarFile"
+                           name="FotoFile" aria-describedby="FotoFile-error" aria-invalid="true">
+
+                    <span asp-validation-for="@Model.Foto" class="text-danger" formnovalidate></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo" class="control-label"></label>
+                <input asp-for="Tipo" class="form-control" />
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descricao" class="control-label"></label>
+                <input asp-for="Descricao" class="form-control" />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AnoConstrucao" class="control-label"></label>
+                <input asp-for="AnoConstrucao" class="form-control" />
+                <span asp-validation-for="AnoConstrucao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Morada" class="control-label"></label>
+                <input asp-for="Morada" class="form-control" />
+                <span asp-validation-for="Morada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AreaTotal" class="control-label"></label>
+                <input asp-for="AreaTotal" class="form-control" />
+                <span asp-validation-for="AreaTotal" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Disponivel" /> @Html.DisplayNameFor(model => model.Disponivel)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrecoPorNoite" class="control-label"></label>
+                <input asp-for="PrecoPorNoite" class="form-control" />
+                <span asp-validation-for="PrecoPorNoite" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoriaId" class="control-label"></label>
+                <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.CategoriaId"></select>
+                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocalizacaoId" class="control-label"></label>
+                <select asp-for="LocalizacaoId" class="form-control" asp-items="ViewBag.LocalizacaoId"></select>
+                <span asp-validation-for="LocalizacaoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocadorId" class="control-label"></label>
+                <select asp-for="LocadorId" class="form-control" asp-items="ViewBag.LocadorId"></select>
+                <span asp-validation-for="LocadorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

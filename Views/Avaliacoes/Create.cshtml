@@ -1,0 +1,31 @@
+﻿@model Trabalho_Pratico.Models.Avaliacao
+
+@{
+    ViewData["Title"] = "Avaliar arrendamento";
+}
+
+<h1>Dar uma classificação ao seu arrendamento</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <input type="hidden" name="ArrendamentoId" value="@Model.ArrendamentoId" />
+            <input type="hidden" name="LocadorId" value="@Model.LocadorId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ClassificacaoReserva" class="control-label"></label>
+                <input asp-for="ClassificacaoReserva" class="form-control" />
+                <span asp-validation-for="ClassificacaoReserva" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Adicionar Classificação" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

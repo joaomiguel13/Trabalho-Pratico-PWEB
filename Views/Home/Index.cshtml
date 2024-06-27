@@ -1,0 +1,135 @@
+﻿@model IEnumerable<Habitacao>
+
+@{
+	ViewData["Title"] = "Inicio";
+}
+
+<div id="carouselDestaques" class="carousel slide m-0" data-bs-ride="carousel">
+	<div class="carousel-indicators">
+		<button type="button" data-bs-target="#carouselDestaques" data-bs-slide-to="0"
+				class="active" aria-label="Slide 1" aria-current="true"></button>
+		<button type="button" data-bs-target="#carouselDestaques" data-bs-slide-to="1" arialabel="Slide 2" class=""></button>
+	</div>
+	<div class="carousel-inner">
+		<div class="carousel-item active banner_01">
+			<div class="container">
+				<div class="carousel-caption">
+					<h1 class=" text-warning">Encontra a habitação perfeita para ti!</h1>
+					<p class=" text-white">Temos casas, apartamentos e quartos, tudo a pensar em ti!.</p>
+					@{
+						if (!User.Identity.IsAuthenticated)
+						{
+							<p><a class="btn btn-lg btn-warning " asp-area="Identity" asp-page="/Account/Login">Junta-te a nós</a></p>
+						}
+						else
+						{
+							<p><a class="btn btn-lg btn-warning " asp-area="Habitacoes" asp-page="/Search">Ver Habitações</a></p>
+						}
+					}
+				</div>
+			</div>
+		</div>
+		<div class="carousel-item banner_02">
+			<div class="container">
+				<div class="carousel-caption text-white">
+					<h1>Encontra já a casa dos teus sonhos</h1>
+					<p>
+						Acesso a inúmeras habitações<br />
+						Encontra já a habitação dos teus sonhos, desde casas, apartamentos e quartos.
+					</p>
+					@{
+						if (!User.Identity.IsAuthenticated)
+						{
+							<p><a class="btn btn-lg btn-warning " asp-area="Identity" asp-page="/Account/Register">Junta-te a nós</a></p>
+						}
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+	<button class="carousel-control-prev" type="button" data-bs-target="#carouselDestaques"
+			data-bs-slide="prev">
+		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Previous</span>
+	</button>
+	<button class="carousel-control-next" type="button" data-bs-target="#carouselDestaques"
+			data-bs-slide="next">
+		<span class="carousel-control-next-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Next</span>
+	</button>
+</div>
+
+<div class="text-center">
+	<div class="container bg-white">
+		<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+			<h3 class="display-4 fw-normal">Habitações Disponíveis</h3>
+			<p class="fs-5 text-muted">
+				Encontre a habitação perfeita para a sua estadia. Com uma variedade de opções, desde apartamentos
+				a casas luxuosas, temos o lugar certo para ti.
+			</p>
+		</div>
+
+		<div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+			@foreach (var hab in Model)
+			{
+				<div class="col">
+					<div class="card mb-4 rounded-3 shadow-sm">
+						<div class="card-header py-3">
+							@if (hab.Foto == null)
+							{
+								<img class="img-thumbnail" src="~/img/user.png" style="height:200px;width:auto" />
+							}
+							else
+							{
+								<img class="img-thumbnail"
+									 src="data:image/*;base64,@(Convert.ToBase64String(hab.Foto))"
+									 style="height:200px;width:auto" />
+							}
+							<h2 class="my-0 fw-normal">
+								@Html.DisplayFor(modelItem => hab.Tipo)
+								<span></span>
+								'@Html.DisplayFor(modelItem => hab.Descricao)'
+							</h2>
+						</div>
+						<div class="card-body">
+							<ul class="list-unstyled mt-3 mb-4">
+								<h5>Tipo: @Html.DisplayFor(modelItem => hab.Categoria.Nome)</h5>
+								<h5>Localização: @Html.DisplayFor(modelItem => hab.Localizacao.Nome)</h5>
+								<h5>
+									Locador:
+									@Html.DisplayFor(modelItem => hab.Locador.Nome)
+									@{
+										decimal sum = 0;
+										foreach (var classi in hab.Locador.Avaliacao)
+										{
+											sum += classi.ClassificacaoReserva;
+										}
+										if (hab.Locador.Avaliacao.Count > 0)
+										{
+											sum /= hab.Locador.Avaliacao.Count;
+											<span>@sum/10</span>
+										}
+									}
+									<svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+								</h5>
+							</ul>
+							<hr>
+							<h1 class="card-title pricing-card-title">
+								@Html.DisplayFor(modelItem => hab.PrecoPorNoite)€
+								<small class="text-muted fw-light"></small>
+							</h1>
+							@if (User.IsInRole("Cliente"))
+							{
+								<hr>
+								<a class="w-100 btn btn-lg btn-outline-primary"
+								   asp-controller="Arrendamentos" asp-action="Create" asp-route-HabitacaoId="@hab.Id">
+									Reservar
+								</a>
+							}
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+</div>

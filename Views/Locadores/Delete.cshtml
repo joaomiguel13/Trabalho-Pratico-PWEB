@@ -1,0 +1,50 @@
+﻿@model Trabalho_Pratico.Models.Locador
+
+@{
+    ViewData["Title"] = "Apagar Empresa";
+}
+
+<h1>Apagar</h1>
+
+<h3>Tem a certeza que pretende apagar esta empresa?</h3>
+<<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EstadoSubscricao)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EstadoSubscricao)
+        </dd>
+        <dt class="col-sm-2">
+            Classificação
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                decimal sum = 0;
+                foreach (var classi in Model.Avaliacao)
+                {
+                    sum += classi.ClassificacaoReserva;
+                }
+                if (Model.Avaliacao.Count > 0)
+                {
+                    sum /= Model.Avaliacao.Count;
+                }
+                <span>@sum/10</span>
+                <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+            }
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Apagar" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>

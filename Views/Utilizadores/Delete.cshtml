@@ -1,0 +1,50 @@
+﻿@model Trabalho_Pratico.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Apagar Utilizador";
+}
+
+<h1>Apagar</h1>
+
+<h3>Tem a certeza que pretende apagar este utilizador?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.PrimeiroNome)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.PrimeiroNome)
+        </dd>
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.UltimoNome)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.UltimoNome)
+        </dd>
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.NIF)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.NIF)
+        </dd>
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.DataNascimento)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.DataNascimento)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Apagar" class="btn btn-danger" />
+        <a asp-action="Gestor" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>

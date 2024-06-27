@@ -1,0 +1,84 @@
+﻿@model Trabalho_Pratico.Models.Habitacao
+
+@{
+    ViewData["Title"] = "Detalhes Habitação";
+}
+
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4 text-center">
+        <h1>@ViewData["Title"]</h1>
+        <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+                @if (Model.Foto == null)
+                {
+                    <img id="MyFoto" class="img-thumbnail" src="~/img/user.png" style="width: 200px; height: auto;" />
+                }
+                else
+                {
+                    <img id="MyFoto" class="img-thumbnail"
+                         src="data:image/*;base64,@(Convert.ToBase64String(Model.Foto))" style="width: 200px; height: auto;" />
+                }
+                <h2 class="my-0 fw-normal">
+
+                    @Html.DisplayFor(modelItem => Model.Tipo)
+                    <span> </span>
+                    @Html.DisplayFor(modelItem => Model.Descricao)
+                    (@Html.DisplayFor(modelItem => Model.Morada))
+
+                </h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mt-3 mb-4">
+                    <h5>Ano de Construção: @Html.DisplayFor(modelItem => Model.AnoConstrucao)</h5>
+
+                    <h5>Área Total: @Html.DisplayFor(modelItem => Model.AreaTotal)</h5>
+                </ul>
+                <hr>
+                @if (Model.Disponivel)
+                {
+                    <h4 class="text-success fw-bold">Ativo</h4>
+                }
+                else
+                {
+                    <h4 class="text-danger fw-bold">Inativo</h4>
+                }
+                <hr />
+                <ul class="list-unstyled mt-3 mb-4">
+                    <h5>Categoria: @Html.DisplayFor(modelItem => Model.Categoria.Nome)</h5>
+
+                    <h5>Localização: @Html.DisplayFor(modelItem => Model.Localizacao.Nome)</h5>
+
+                    <h5>
+                        Locador:
+                        @Html.DisplayFor(modelItem => Model.Locador.Nome)
+                        @{
+                            decimal sum = 0;
+                            foreach (var classi in Model.Locador.Avaliacao)
+                            {
+                                sum += classi.ClassificacaoReserva;
+                            }
+                            if (Model.Locador.Avaliacao.Count > 0)
+                            {
+                                sum /= Model.Locador.Avaliacao.Count;
+                                <span>@sum/10</span>
+                            }
+                        }
+                        <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+
+                    </h5>
+                </ul>
+                <hr>
+
+                <h1 class="card-title pricing-card-title">
+                    @Html.DisplayFor(modelItem => Model.PrecoPorNoite)€
+                    <small class="text-muted fw-light"></small>
+                </h1>
+            </div>s
+        </div>
+
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

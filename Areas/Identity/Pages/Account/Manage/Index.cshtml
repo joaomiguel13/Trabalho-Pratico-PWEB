@@ -1,0 +1,50 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Perfil do utilizador";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Username" class="form-control" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PrimeiroNome" class="form-control" aria-required="true" />
+                <label asp-for="Input.PrimeiroNome"></label>
+                <span asp-validation-for="Input.PrimeiroNome" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.UltimoNome" class="form-control" aria-required="true" />
+                <label asp-for="Input.UltimoNome"></label>
+                <span asp-validation-for="Input.UltimoNome" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.NIF" class="form-control" aria-required="true" />
+                <label asp-for="Input.NIF"></label>
+                <span asp-validation-for="Input.NIF" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.DataNascimento" class="form-control" aria-required="true" />
+                <label asp-for="Input.DataNascimento"></label>
+                <span asp-validation-for="Input.DataNascimento" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Guardar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

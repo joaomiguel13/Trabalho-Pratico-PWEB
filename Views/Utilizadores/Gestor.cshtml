@@ -1,0 +1,110 @@
+﻿@model Trabalho_Pratico.Models.ViewModels.PesquisaUtilizadorViewModel
+
+@{
+    ViewData["Title"] = "Utilizadores";
+}
+
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+    <h1 class="display-4 fw-normal">@ViewData["Title"]</h1>
+</div>
+<hr />
+
+<a asp-action="Create" class="btn btn-success">Adicionar Funcionário/Gestor</a>
+<form method="post">
+
+    <label asp-for="TextoAPesquisar" class="control-label"></label>
+    <input asp-for="TextoAPesquisar" />
+    <button id="botaoPesquisa" type="submit" class="btn btn-default">
+        <svg bootstrap-icon="Search" class="text-warning" width="24" height="24" aria-label="Search"></svg>
+    </button>
+    <label for="ordem">Ordenação:</label>
+    <select name="Ordem" asp-for="Ordem" onchange="this.form.submit()">
+        <option value="nomeDesc">Nome Descendente</option>
+        <option value="nomeAsc">Nome Ascendente</option>
+    </select>
+</form>
+@if (@ViewBag.error != null)
+{
+    <p class="text-danger">@ViewBag.error</p>
+}
+<table class="table table-bordered table-striped table-hover text-center table-responsive-sm">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaDeUtilizadores.FirstOrDefault().PrimeiroNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaDeUtilizadores.FirstOrDefault().UltimoNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaDeUtilizadores.FirstOrDefault().UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaDeUtilizadores.FirstOrDefault().Roles)
+            </th>
+            <th>Operações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListaDeUtilizadores)
+        {
+            <tr>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                    {
+                        @Html.DisplayFor(modelItem => item.PrimeiroNome)
+                    }
+                    else
+                    {
+                        @Html.Raw(item.PrimeiroNome.ToString().ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                    }
+                </td>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                    {
+                        @Html.DisplayFor(modelItem => item.UltimoNome)
+                    }
+                    else
+                    {
+                        @Html.Raw(item.UltimoNome.ToString().ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                    }
+                </td>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                    {
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    }
+                    else
+                    {
+                        @Html.Raw(item.UserName.ToString().ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                    }
+                </td>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                    {
+                        @String.Join(',',  item.Roles)
+                    }
+                    else
+                    {
+                        @Html.Raw(String.Join(',',  item.Roles).ToLower().Replace(Model.TextoAPesquisar.ToLower(),
+                "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                    }
+                </td>
+                <td>
+                    @if (item.Ativo)
+                    {
+                        <a asp-action="Desativar" asp-route-id="@item.Id" class="btn btn-outline-danger">Desativar Conta</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Ativar" asp-route-id="@item.Id" class="btn btn-outline-success">Ativar Conta</a>
+                    }
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Apagar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

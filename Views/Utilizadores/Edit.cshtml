@@ -1,0 +1,80 @@
+﻿@model Trabalho_Pratico.Models.ViewModels.EditarUtilizadorViewModel
+
+@{
+    ViewData["Title"] = "Editar Utilizador";
+}
+
+<h1>Editar</h1>
+
+<h4>Editar um utilizador</h4>
+<hr />
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="utilizador.Id" />
+            <div class="form-floating">
+                <input asp-for="utilizador.UserName" class="form-control" disabled />
+                <label asp-for="utilizador.UserName" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="utilizador.PrimeiroNome" class="form-control" />
+                <label asp-for="utilizador.PrimeiroNome" class="form-label"></label>
+                <span asp-validation-for="utilizador.PrimeiroNome" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="utilizador.UltimoNome" class="form-control" />
+                <label asp-for="utilizador.UltimoNome" class="form-label"></label>
+                <span asp-validation-for="utilizador.UltimoNome" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="utilizador.NIF" class="form-control" />
+                <label asp-for="utilizador.NIF" class="form-label"></label>
+                <span asp-validation-for="utilizador.NIF" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="utilizador.DataNascimento" class="form-control" />
+                <label asp-for="utilizador.DataNascimento" class="form-label"></label>
+                <span asp-validation-for="utilizador.DataNascimento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+            @if (Model.utilizador.ContaAtiva)
+            {
+                <a asp-action="Desativar" asp-route-id="@Model.utilizador.Id" class="btn btn-danger">Desativar Conta</a>
+            }
+            else
+            {
+                <a asp-action="Ativar" asp-route-id="@Model.utilizador.Id" class="btn btn-success">Ativar Conta</a>
+            }
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4 mb-7">
+            <h3>Permissões do utilizador</h3>
+            @for (int i = 0; i < Model.roles.Count; i++)
+            {
+                <div class="form-check m-1">
+                    <input type="hidden" asp-for="@Model.roles[i].RoleId" />
+                    <input type="hidden" asp-for="@Model.roles[i].RoleName" />
+                    <input asp-for="@Model.roles[i].Selected" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@Model.roles[i].Selected">@Model.roles[i].RoleName</label>
+                </div>
+            }
+            <div class="form-group">
+                <label class="control-label">Locador: (Necessário apenas para gestor e funcionário)</label>
+                <select asp-for="utilizador.LocadorId" class="form-control" asp-items="ViewBag.LocadorId">
+                    <option disabled selected> -- sem locador -- </option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

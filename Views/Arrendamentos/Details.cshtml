@@ -1,0 +1,121 @@
+﻿@model Trabalho_Pratico.Models.Arrendamento
+
+@{
+    ViewData["Title"] = "Detalhes do Arrendamento";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.DataEntrada)
+            </dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.DataEntrada)
+            </dd>
+            <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.DataSaida)
+            </dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.DataSaida)
+            </dd>
+            <dt class="col-sm-6">
+                Estado Reserva
+            </dt>
+            <dd class="col-sm-6">
+                @if (!Model.Confirmado)
+                {
+                    <span class="text-danger">Não Confirmado</span>
+                }
+                else
+                {
+                    if (Model.ArrendamentoEstadoHabitacaoEntrada == null)
+                    {
+                        <span class="text-info">Por Entrar</span>
+                    }
+                    else if (Model.ArrendamentoEstadoHabitacaoSaida == null)
+                    {
+                        <span class="text-warning">Por Sair</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Concluido</span>
+                        @if (Model.Habitacao.Locador.Avaliacao.Where(c => c.LocadorId == Model.Id).FirstOrDefault() != null)
+                        {
+                            <span>@Model.Habitacao.Locador.Avaliacao.Where(c => c.LocadorId == Model.Id).FirstOrDefault().ClassificacaoReserva/10</span>
+                            <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+                        }
+                    }
+                }
+            </dd>
+            <dt class="col-sm-6">
+                Preço
+            </dt>
+            <dd class="col-sm-6">
+                <span>@((@Model.DataSaida - @Model.DataEntrada).Days * @Model.Habitacao.PrecoPorNoite)€</span>
+            </dd>
+        </dl>
+        <div>
+            <a asp-action="Historico" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-4 mb-7 text-center">
+        <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+                @if (Model.Habitacao.Foto == null)
+                {
+                    <img id="MyFoto" class="img-thumbnail" src="~/img/user.png" style="width: 200px; height: auto;" />
+                }
+                else
+                {
+                    <img id="MyFoto" class="img-thumbnail"
+                         src="data:image/*;base64,@(Convert.ToBase64String(Model.Habitacao.Foto))" style="width: 200px; height: auto;" />
+                }
+                <h2 class="my-0 fw-normal">
+
+                    @Html.DisplayFor(modelItem => Model.Habitacao.Tipo)
+                    <span> </span>
+                    @Html.DisplayFor(modelItem => Model.Habitacao.Descricao)
+
+                </h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mt-3 mb-4">
+                    <h5>Categoria: @Html.DisplayFor(modelItem => Model.Habitacao.Categoria.Nome)</h5>
+
+                    <h5>Localização: @Html.DisplayFor(modelItem => Model.Habitacao.Localizacao.Nome)</h5>
+
+                    <h5>
+                        Locador:
+                        @Html.DisplayFor(modelItem => Model.Habitacao.Locador.Nome)
+                        @{
+                            decimal sum = 0;
+                            foreach (var classi in Model.Habitacao.Locador.Avaliacao)
+                            {
+                                sum += classi.ClassificacaoReserva;
+                            }
+                            if (Model.Habitacao.Locador.Avaliacao.Count > 0)
+                            {
+                                sum /= Model.Habitacao.Locador.Avaliacao.Count;
+                            }
+                            if (sum > 0)
+                            {
+                                <span>@sum/10</span>
+                            }
+                        }
+                        <svg bootstrap-icon="Star" class="text-warning align-bottom" width="24" height="24" aria-label="Classificação"></svg>
+                    </h5>
+                </ul>
+                <hr>
+                <h1 class="card-title pricing-card-title">
+                    @Html.DisplayFor(modelItem => Model.Habitacao.PrecoPorNoite)€
+                    <small class="text-muted fw-light"></small>
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>

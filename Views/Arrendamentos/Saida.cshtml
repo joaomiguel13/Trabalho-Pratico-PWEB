@@ -1,0 +1,54 @@
+﻿@model Trabalho_Pratico.Models.ArrendamentoEstadoHabitacao
+
+@{
+    ViewData["Title"] = "Sair Habitação";
+}
+
+<h1>Saida da habitação</h1>
+
+<h4>Sair da habitação o cliente @Model.Arrendamento.Cliente.UserName</h4>
+@{
+    if (ViewBag.error != null)
+    {
+        <span class="text-danger">@ViewBag.error</span>
+    }
+}
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Saida" enctype="multipart/form-data">
+            <input type="hidden" name="ArrendamentoId" value="@Model.ArrendamentoId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="DanosHabitacao" /> @Html.DisplayNameFor(model => model.DanosHabitacao)
+                </label>
+            </div>
+            <span>Provas dos danos, caso existam:</span>
+            <div class="form-group">
+                <input type="file" name="provas" id="provas"
+                       multiple
+                       accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                       class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Observacoes" class="control-label"></label>
+                <textarea asp-for="Observacoes" class="form-control"></textarea>
+                <span asp-validation-for="Observacoes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Saida da habitação" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
